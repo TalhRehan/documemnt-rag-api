@@ -17,12 +17,12 @@ An enterprise-ready **Retrieval-Augmented Generation (RAG)** platform that trans
 
 ### What Makes This System Production-Ready?
 
-✅ **Intelligent Answer Generation** - OpenAI GPT-4o-mini integration for coherent, document-grounded responses  
-✅ **Semantic Chunking** - Sentence-boundary-aware text splitting (prevents mid-word fragmentation)  
-✅ **Optimized Vector Search** - Cosine similarity on normalized embeddings for precise semantic matching  
-✅ **Multi-Agent Architecture** - Isolated, specialized agents coordinated by a central orchestrator  
-✅ **Robust Error Handling** - Structured error responses with detailed error codes  
-✅ **Scalable Design** - FAISS vector store supporting millions of document chunks  
+  **Intelligent Answer Generation** - OpenAI GPT-4o-mini integration for coherent, document-grounded responses  
+  **Semantic Chunking** - Sentence-boundary-aware text splitting (prevents mid-word fragmentation)  
+  **Optimized Vector Search** - Cosine similarity on normalized embeddings for precise semantic matching  
+  **Multi-Agent Architecture** - Isolated, specialized agents coordinated by a central orchestrator  
+  **Robust Error Handling** - Structured error responses with detailed error codes  
+  **Scalable Design** - FAISS vector store supporting millions of document chunks  
 
 ---
 
