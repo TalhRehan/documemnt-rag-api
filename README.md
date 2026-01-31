@@ -514,18 +514,3 @@ doc_ai_backend/
 
 ---
 
-
-
-
-
-## 👤 Author
-
-**Built for production-grade document intelligence applications**
-
-For questions or collaboration inquiries, please contact the development team.
-
----
-
-**System Status**: Production-ready, actively maintained  
-**Last Updated**: January 2025  
-**Version**: 2.0.0 (RAG-enhanced with OpenAI integration)
