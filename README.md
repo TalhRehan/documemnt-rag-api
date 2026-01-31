@@ -17,16 +17,16 @@ An enterprise-ready **Retrieval-Augmented Generation (RAG)** platform that trans
 
 ### What Makes This System Production-Ready?
 
-  **Intelligent Answer Generation** - OpenAI GPT-4o-mini integration for coherent, document-grounded responses  
-  **Semantic Chunking** - Sentence-boundary-aware text splitting (prevents mid-word fragmentation)  
-  **Optimized Vector Search** - Cosine similarity on normalized embeddings for precise semantic matching  
-  **Multi-Agent Architecture** - Isolated, specialized agents coordinated by a central orchestrator  
-  **Robust Error Handling** - Structured error responses with detailed error codes  
-  **Scalable Design** - FAISS vector store supporting millions of document chunks  
+✓ **Intelligent Answer Generation** - OpenAI GPT-4o-mini integration for coherent, document-grounded responses  
+✓ **Semantic Chunking** - Sentence-boundary-aware text splitting (prevents mid-word fragmentation)  
+✓ **Optimized Vector Search** - Cosine similarity on normalized embeddings for precise semantic matching  
+✓ **Multi-Agent Architecture** - Isolated, specialized agents coordinated by a central orchestrator  
+✓ **Robust Error Handling** - Structured error responses with detailed error codes  
+✓ **Scalable Design** - FAISS vector store supporting millions of document chunks  
 
 ---
 
-## 🏗️ System Architecture
+## System architecture overview
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -68,9 +68,57 @@ An enterprise-ready **Retrieval-Augmented Generation (RAG)** platform that trans
 - **Semantic-First**: Cosine similarity on normalized embeddings ensures semantic relevance
 - **Grounded Generation**: LLM answers strictly based on retrieved document context
 
+### Technology Stack
+
+| Layer | Technology | Purpose | Justification |
+|-------|-----------|---------|---------------|
+| **Web Framework** | FastAPI | REST API, async I/O | Auto-documentation, type safety, 3x faster than Flask |
+| **LLM** | OpenAI GPT-4o-mini | Answer generation | Cost-effective, fast, coherent responses |
+| **Embeddings** | all-MiniLM-L6-v2 | Semantic vectors (384-dim) | Balance of quality and speed (120M params) |
+| **Vector Store** | FAISS | Similarity search | Industry-standard, 10M+ vectors/sec throughput |
+| **PDF Parser** | PyMuPDF (fitz) | Text extraction | 3x faster than PyPDF2, better layout handling |
+| **OCR Engine** | Tesseract | Image text extraction | Open-source, 100+ language support |
+| **ORM** | SQLAlchemy 2.0 | Database interactions | Type-safe, async-ready, migration support |
+| **Database** | SQLite | Metadata storage | Zero-config, perfect for MVP/single-instance |
+
+### Project Structure
+
+```
+doc_ai_backend/
+├── app/
+│   ├── main.py                      # FastAPI app factory + startup
+│   ├── agents/                      # Isolated AI agents
+│   │   ├── ingestion_agent.py      # PDF/Image → Clean Text
+│   │   ├── indexing_agent.py       # Text → Semantic Chunks → Vectors
+│   │   └── qa_agent.py             # Query → Retrieval → GPT-4 Answer
+│   ├── api/
+│   │   └── routes.py               # REST endpoint definitions
+│   ├── services/                    # Business logic wrappers
+│   │   ├── orchestrator.py         # Multi-agent workflow coordinator
+│   │   ├── ingestion_service.py    # Ingestion wrapper + state mgmt
+│   │   ├── indexing_service.py     # Indexing wrapper + persistence
+│   │   ├── qa_service.py           # Q&A wrapper + context assembly
+│   │   ├── storage.py              # File I/O utilities
+│   │   └── validators.py           # Input validation (size, format)
+│   ├── db/
+│   │   ├── base.py                 # SQLAlchemy declarative base
+│   │   ├── session.py              # Database session factory
+│   │   └── models.py               # Document & Chunk ORM models
+│   └── core/
+│       └── config.py               # App configuration (paths, limits)
+├── storage/
+│   ├── uploads/                    # User-uploaded files (UUID names)
+│   ├── indexes/                    # FAISS indices + JSON mappings
+│   └── app.db                      # SQLite database
+├── .env                            # Environment variables (OPENAI_API_KEY)
+├── .gitignore                      # Excludes .env, __pycache__, storage/
+├── requirements.txt                # Python dependencies
+└── README.md                       # This file
+```
+
 ---
 
-## 🤖 Agent Architecture
+## Agent responsibilities
 
 ### 1. Ingestion Agent
 **File**: `app/agents/ingestion_agent.py`  
@@ -167,7 +215,7 @@ An enterprise-ready **Retrieval-Augmented Generation (RAG)** platform that trans
 
 ---
 
-## 📡 API Reference
+## API endpoints
 
 ### 🔹 Health Check
 ```http
@@ -282,7 +330,36 @@ POST /documents/{document_id}/index
 
 ---
 
-## 🚀 Installation & Setup
+### 🔐 Error Handling
+
+All endpoints return structured errors with HTTP status codes:
+
+**Example Error Response**:
+```json
+{
+  "detail": {
+    "code": "FILE_TOO_LARGE",
+    "message": "File exceeds 25MB limit. Uploaded file size: 32MB"
+  }
+}
+```
+
+**Error Code Reference**:
+
+| Code | HTTP Status | Description |
+|------|-------------|-------------|
+| `NO_FILE` | 400 | Missing file in upload request |
+| `EMPTY_FILE` | 400 | Uploaded file contains no data |
+| `FILE_TOO_LARGE` | 413 | File exceeds 25MB size limit |
+| `UNSUPPORTED_FILE_TYPE` | 415 | File extension not in allowed list |
+| `TEXT_EXTRACTION_FAILED` | 400 | PDF/image parsing error |
+| `PROCESSING_FAILED` | 400 | Orchestrator pipeline failure |
+| `INVALID_STATE` | 400 | Document not in required state for operation |
+| `QA_FAILED` | 400 | Question answering error (missing index, API failure) |
+
+---
+
+## Setup instructions
 
 ### Prerequisites
 
@@ -329,8 +406,7 @@ mkdir -p storage/uploads storage/indexes
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
-**Access API**: http://13.51.194.236:8080/
-
+**Access API**: http://localhost:8080/docs
 
 ---
 
@@ -377,21 +453,6 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080
 
 ---
 
-## 🛠️ Technology Stack
-
-| Layer | Technology | Purpose | Justification |
-|-------|-----------|---------|---------------|
-| **Web Framework** | FastAPI | REST API, async I/O | Auto-documentation, type safety, 3x faster than Flask |
-| **LLM** | OpenAI GPT-4o-mini | Answer generation | Cost-effective, fast, coherent responses |
-| **Embeddings** | all-MiniLM-L6-v2 | Semantic vectors (384-dim) | Balance of quality and speed (120M params) |
-| **Vector Store** | FAISS | Similarity search | Industry-standard, 10M+ vectors/sec throughput |
-| **PDF Parser** | PyMuPDF (fitz) | Text extraction | 3x faster than PyPDF2, better layout handling |
-| **OCR Engine** | Tesseract | Image text extraction | Open-source, 100+ language support |
-| **ORM** | SQLAlchemy 2.0 | Database interactions | Type-safe, async-ready, migration support |
-| **Database** | SQLite | Metadata storage | Zero-config, perfect for MVP/single-instance |
-
----
-
 ## 📊 Performance Metrics
 
 | Operation | Latency | Notes |
@@ -405,35 +466,6 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080
 | **End-to-End Q&A** | 1.5-4 seconds | Retrieval + generation + I/O |
 
 **Tested On**: AWS EC2 t3.medium (2 vCPU, 4GB RAM)
-
----
-
-## 🔐 Error Handling
-
-All endpoints return structured errors with HTTP status codes:
-
-**Example Error Response**:
-```json
-{
-  "detail": {
-    "code": "FILE_TOO_LARGE",
-    "message": "File exceeds 25MB limit. Uploaded file size: 32MB"
-  }
-}
-```
-
-**Error Code Reference**:
-
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| `NO_FILE` | 400 | Missing file in upload request |
-| `EMPTY_FILE` | 400 | Uploaded file contains no data |
-| `FILE_TOO_LARGE` | 413 | File exceeds 25MB size limit |
-| `UNSUPPORTED_FILE_TYPE` | 415 | File extension not in allowed list |
-| `TEXT_EXTRACTION_FAILED` | 400 | PDF/image parsing error |
-| `PROCESSING_FAILED` | 400 | Orchestrator pipeline failure |
-| `INVALID_STATE` | 400 | Document not in required state for operation |
-| `QA_FAILED` | 400 | Question answering error (missing index, API failure) |
 
 ---
 
@@ -471,46 +503,13 @@ The document highlights that applications span healthcare (analyzing medical ima
 to detect diseases more accurately than human doctors in some cases), finance 
 (predicting market trends, detecting fraudulent transactions), and transportation 
 (self-driving cars that navigate roads and make split-second decisions).
-```
 
-**Source Attribution**: 5 relevant chunks with chunk IDs and previews
 
----
 
-## 🗂️ Project Structure
 
-```
-doc_ai_backend/
-├── app/
-│   ├── main.py                      # FastAPI app factory + startup
-│   ├── agents/                      # Isolated AI agents
-│   │   ├── ingestion_agent.py      # PDF/Image → Clean Text
-│   │   ├── indexing_agent.py       # Text → Semantic Chunks → Vectors
-│   │   └── qa_agent.py             # Query → Retrieval → GPT-4 Answer
-│   ├── api/
-│   │   └── routes.py               # REST endpoint definitions
-│   ├── services/                    # Business logic wrappers
-│   │   ├── orchestrator.py         # Multi-agent workflow coordinator
-│   │   ├── ingestion_service.py    # Ingestion wrapper + state mgmt
-│   │   ├── indexing_service.py     # Indexing wrapper + persistence
-│   │   ├── qa_service.py           # Q&A wrapper + context assembly
-│   │   ├── storage.py              # File I/O utilities
-│   │   └── validators.py           # Input validation (size, format)
-│   ├── db/
-│   │   ├── base.py                 # SQLAlchemy declarative base
-│   │   ├── session.py              # Database session factory
-│   │   └── models.py               # Document & Chunk ORM models
-│   └── core/
-│       └── config.py               # App configuration (paths, limits)
-├── storage/
-│   ├── uploads/                    # User-uploaded files (UUID names)
-│   ├── indexes/                    # FAISS indices + JSON mappings
-│   └── app.db                      # SQLite database
-├── .env                            # Environment variables (OPENAI_API_KEY)
-├── .gitignore                      # Excludes .env, __pycache__, storage/
-├── requirements.txt                # Python dependencies
-└── README.md                       # This file
-```
+## 📧 Support
 
----
-
+For issues and questions:
+- **Issues**: Open a GitHub issue
+- **Documentation**: http://13.51.194.236:8080/docs
+- **API Health**: http://13.51.194.236:8080/health
