@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual env
+venv/
+.env
+
+# Database
+*.db
+
+# Storage artifacts
+storage/uploads/
+storage/indexes/
+
+# OS
+.DS_Store
