@@ -7,7 +7,7 @@
 [![FAISS](https://img.shields.io/badge/Vector%20Search-FAISS-orange.svg)](https://github.com/facebookresearch/faiss)
 [![AWS](https://img.shields.io/badge/Deployed-AWS%20EC2-FF9900.svg)](https://aws.amazon.com/ec2/)
 
-**Live API**: http://13.51.194.236:8080/health | [Interactive Documentation](http://13.51.194.236:8080/docs)
+**Live API**: http://51.20.6.128:8000/health | [Interactive Documentation](http://51.20.6.128:8000/docs)
 
 ---
 
@@ -406,7 +406,7 @@ mkdir -p storage/uploads storage/indexes
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
-**Access API**: http://localhost:8080/docs
+**Access API**: http://51.20.6.128:8000/docs
 
 ---
 
