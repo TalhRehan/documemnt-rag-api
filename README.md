@@ -514,38 +514,9 @@ doc_ai_backend/
 
 ---
 
-## 🚧 Future Roadmap
 
-### Phase 1: Enhanced Retrieval (In Progress)
-- [ ] **Hybrid Search**: Combine dense vectors (semantic) + sparse vectors (keyword BM25)
-- [ ] **Re-ranking**: Cross-encoder model for precision boost
-- [ ] **Query Expansion**: Synonym/entity expansion for better recall
 
-### Phase 2: Production Hardening
-- [ ] **PostgreSQL Migration**: Replace SQLite with pgvector extension
-- [ ] **Async Task Queue**: Celery + Redis for background processing
-- [ ] **Caching Layer**: Redis cache for frequent queries
-- [ ] **Rate Limiting**: Per-user API quotas
 
-### Phase 3: Advanced Features
-- [ ] **Multi-document Search**: Cross-reference across document collections
-- [ ] **Streaming Responses**: Real-time answer generation
-- [ ] **Document Versioning**: Track and compare document revisions
-- [ ] **Citation Extraction**: Precise source sentence attribution
-
-### Phase 4: Enterprise Features
-- [ ] **Multi-tenancy**: User authentication + document isolation
-- [ ] **Admin Dashboard**: Usage analytics, cost tracking
-- [ ] **Fine-tuned Embeddings**: Domain-specific embedding models
-- [ ] **Guardrails**: Content filtering, PII redaction
-
----
-
-## 📄 License
-
-This project is proprietary and confidential. Unauthorized copying, distribution, or use is strictly prohibited.
-
----
 
 ## 👤 Author
 
